@@ -31,5 +31,3 @@ plt.imshow(label)
 plt.title("Label")
 
 plt.show()
-
-
