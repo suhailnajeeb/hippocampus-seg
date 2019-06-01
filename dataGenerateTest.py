@@ -19,21 +19,34 @@ data = img.get_fdata()
 mask = nib.load(label)
 maskData = mask.get_fdata()
 
-singleSlice = data[0,:,:]
-singleMask = data[0,:,:]
+singleSlice = data[20,:,:]
+singleMask = maskData[20,:,:]
 
-import matplotlib.pyplot as plt
+import h5py
 
-plt.figure()
-plt.subplot(1,2,1)
-plt.imshow(singleSlice)
-plt.title("MRI Scan")
+h5file = h5py.File("./data/testfile.h5","w")
+h5file.create_dataset("image",singleSlice.shape)
+h5file.create_dataset("mask",singleMask.shape)
 
-plt.subplot(1,2,2)
-plt.imshow(singleMask)
-plt.title("Label")
+h5file["image"][...] = singleSlice
+h5file["mask"][...] = singleMask
 
-plt.show()
+h5file.close()
+
+# import matplotlib.pyplot as plt
+
+# plt.figure()
+# plt.subplot(1,2,1)
+# plt.imshow(singleSlice)
+# plt.title("MRI Scan")
+
+# plt.subplot(1,2,2)
+# plt.imshow(singleMask)
+# plt.title("Label")
+
+# plt.show()
+
+# # Lets recall what I want to do:
 
 
 
