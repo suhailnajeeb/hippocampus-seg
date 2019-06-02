@@ -37,24 +37,3 @@ h5file["mask"][...] = singleMask
 
 h5file.close()
 
-
-
-
-
-# import matplotlib.pyplot as plt
-
-# plt.figure()
-# plt.subplot(1,2,1)
-# plt.imshow(singleSlice)
-# plt.title("MRI Scan")
-
-# plt.subplot(1,2,2)
-# plt.imshow(singleMask)
-# plt.title("Label")
-
-# plt.show()
-
-# # Lets recall what I want to do:
-
-
-
