@@ -3,5 +3,10 @@
 import cv2
 
 def resize(img,rows,cols):
-    return cv2.resize(img, (rows,cols) , interpolation =cv2.INTER_CUBIC)
+    '''
+    pass the image and row/col shape
+    returns resized image
+
+    '''
+    return cv2.resize(img, (cols,rows) , interpolation =cv2.INTER_CUBIC)
 
