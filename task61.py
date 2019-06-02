@@ -1,3 +1,4 @@
+
 import nibabel as nib
 import glob
 
@@ -12,7 +13,6 @@ labels = glob.glob(labelPath)
 scan = scans[0]
 label = labels[0]
 
-
 img = nib.load(scan)
 data = img.get_fdata()
 
@@ -21,10 +21,6 @@ maskData = mask.get_fdata()
 
 singleSlice = data[20,:,:]
 singleMask = maskData[20,:,:]
-
-xsize = 35
-ysize = 50
-zsize = 35
 
 import h5py
 
@@ -36,25 +32,3 @@ h5file["image"][...] = singleSlice
 h5file["mask"][...] = singleMask
 
 h5file.close()
-
-
-
-
-
-# import matplotlib.pyplot as plt
-
-# plt.figure()
-# plt.subplot(1,2,1)
-# plt.imshow(singleSlice)
-# plt.title("MRI Scan")
-
-# plt.subplot(1,2,2)
-# plt.imshow(singleMask)
-# plt.title("Label")
-
-# plt.show()
-
-# # Lets recall what I want to do:
-
-
-
