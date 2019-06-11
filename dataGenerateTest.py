@@ -1,5 +1,6 @@
 import nibabel as nib
 import glob
+import numpy as np
 
 scanPath = './Task04_Hippocampus/imagesTr/*.gz'
 labelPath = './Task04_Hippocampus/labelsTr/*.gz'
@@ -19,12 +20,20 @@ data = img.get_fdata()
 mask = nib.load(label)
 maskData = mask.get_fdata()
 
-singleSlice = data[20,:,:]
-singleMask = maskData[20,:,:]
-
 xsize = 35
 ysize = 50
 zsize = 35
+
+# take slices along the yz plane:
+
+slices = []
+
+n = data.shape[0]
+for i in range(n):
+    slices.append(data[i.:,:])
+
+slic = slices[0]
+
 
 '''
 
