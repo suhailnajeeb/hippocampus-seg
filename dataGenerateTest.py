@@ -13,7 +13,6 @@ labels = glob.glob(labelPath)
 scan = scans[0]
 label = labels[0]
 
-
 img = nib.load(scan)
 data = img.get_fdata()
 
@@ -33,11 +32,11 @@ for i in range(n):
     slices.append(data[i,:,:])
 '''
 
-slic = data[0,:,:]
-line = slic[0]
 
+thresh = 4000
 
-
+capped = capScan(scan,thresh)
+normalized = normalize(capped,thresh)
 
 #line = list(map(f,line))
 
@@ -50,10 +49,15 @@ def capScan(scan,thresh):
                 capped[i][j][k] = f(data[i][j][k])
     return capped
 
+# todo: study the standard deviation of the data and update normalize 
+
 def normalize(scan,max):
     return scan/4000
 
-# todo with a single slice:
+
+
+# todo: Resize Scan in all dimensions
+
 '''
 
 import h5py
