@@ -33,7 +33,13 @@ for i in range(n):
     slices.append(data[i,:,:])
 
 slic = slices[0]
+x = 5000
+if(x>4000): x = 4000
 
+# todo with a single slice:
+
+1. Apply capping at 4000
+2. Normalize
 
 '''
 
