@@ -30,7 +30,7 @@ slices = []
 
 n = data.shape[0]
 for i in range(n):
-    slices.append(data[i.:,:])
+    slices.append(data[i,:,:])
 
 slic = slices[0]
 
