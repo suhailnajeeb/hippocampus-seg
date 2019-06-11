@@ -26,6 +26,8 @@ xsize = 35
 ysize = 50
 zsize = 35
 
+'''
+
 import h5py
 
 h5file = h5py.File("./data/testfile.h5","w")
@@ -37,3 +39,4 @@ h5file["mask"][...] = singleMask
 
 h5file.close()
 
+'''
