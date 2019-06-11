@@ -25,16 +25,31 @@ ysize = 50
 zsize = 35
 
 # take slices along the yz plane:
-
+'''
 slices = []
 
 n = data.shape[0]
 for i in range(n):
     slices.append(data[i,:,:])
+'''
 
-slic = slices[0]
-x = 5000
-if(x>4000): x = 4000
+slic = data[0,:,:]
+line = slic[0]
+
+thresh = 100
+
+
+#line = list(map(f,line))
+
+def capScan(scan):
+    f = lambda x : thresh if x>thresh else x
+    capped = np.zeros(data.shape)
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            for k in range(data.shape[2]):
+                capped[i][j][k] = f(data[i][j][k])
+    return capped
+
 
 # todo with a single slice:
 
