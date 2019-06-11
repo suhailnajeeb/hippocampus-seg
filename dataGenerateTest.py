@@ -52,7 +52,7 @@ def capScan(scan,thresh):
 # todo: study the standard deviation of the data and update normalize 
 
 def normalize(scan,max):
-    return scan/4000
+    return scan/4000.0
 
 
 
