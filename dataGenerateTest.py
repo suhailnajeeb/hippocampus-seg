@@ -36,12 +36,12 @@ for i in range(n):
 slic = data[0,:,:]
 line = slic[0]
 
-thresh = 100
+
 
 
 #line = list(map(f,line))
 
-def capScan(scan):
+def capScan(scan,thresh):
     f = lambda x : thresh if x>thresh else x
     capped = np.zeros(data.shape)
     for i in range(data.shape[0]):
@@ -50,12 +50,10 @@ def capScan(scan):
                 capped[i][j][k] = f(data[i][j][k])
     return capped
 
+def normalize(scan,max):
+    return scan/4000
 
 # todo with a single slice:
-
-1. Apply capping at 4000
-2. Normalize
-
 '''
 
 import h5py
