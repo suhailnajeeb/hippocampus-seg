@@ -19,10 +19,14 @@ data = img.get_fdata()
 mask = nib.load(label)
 maskData = mask.get_fdata()
 
+size = [35,50,35]
+
+xsize, ysize, zsize = size
+'''
 xsize = 35
 ysize = 50
 zsize = 35
-
+'''
 # take slices along the yz plane:
 '''
 slices = []
@@ -38,18 +42,17 @@ thresh = 4000
 from utilsDb import capScan
 from utilsDb import normalize
 from utilsDb import return2DslicesAsList
-from utilsDb import resize
+from utilsDb import resizeStack
+
 
 capped = capScan(data,thresh)
 #normalized = normalize(capped,thresh)
  
 zx = return2DslicesAsList(capped,'zx')
 
-slic = zx[0]
-print(slic.shape)
-#resized = resize(slic,ysize,zsize)
+resized = resizeStack(zx,'zx',size)
 
-resized = [resize(slic,zsize,xsize) for slic in zx]
+
 
 import numpy as np
 
