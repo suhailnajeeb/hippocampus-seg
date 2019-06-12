@@ -35,9 +35,17 @@ for i in range(n):
 
 thresh = 4000
 
-capped = capScan(scan,thresh)
-normalized = normalize(capped,thresh)
+from utilsDb import capScan
+from utilsDb import normalize
+from utilsDb import return2DslicesAsList
 
+capped = capScan(data,thresh)
+#normalized = normalize(capped,thresh)
+ 
+yz = return2DslicesAsList(capped,'yz')
+
+slic = yz[0]
+ 
 # todo: Study the standard deviation and distribution of the dataset
 
 # todo: Resize Scan in all dimensions
