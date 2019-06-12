@@ -38,13 +38,23 @@ thresh = 4000
 from utilsDb import capScan
 from utilsDb import normalize
 from utilsDb import return2DslicesAsList
+from utilsDb import resize
 
 capped = capScan(data,thresh)
 #normalized = normalize(capped,thresh)
  
-yz = return2DslicesAsList(capped,'yz')
+zx = return2DslicesAsList(capped,'zx')
 
-slic = yz[0]
+slic = zx[0]
+print(slic.shape)
+#resized = resize(slic,ysize,zsize)
+
+resized = [resize(slic,zsize,xsize) for slic in zx]
+
+import numpy as np
+
+zx = np.asarray(resized)
+print(zx.shape)
  
 # todo: Study the standard deviation and distribution of the dataset
 

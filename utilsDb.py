@@ -9,7 +9,21 @@ def resize(img,rows,cols):
     returns resized image
 
     '''
-    return cv2.resize(img, (cols,rows) , interpolation =cv2.INTER_CUBIC)
+    return cv2.resize(img, (cols,rows) , interpolation = cv2.INTER_CUBIC)
+
+def resizeStack(stack,plane,size):
+    '''
+    resize a stack of images
+    '''
+    xsize, ysize, zsize = size
+    if plane == 'yz':
+        resized = [resize(slic,ysize,zsize) for slic in stack]
+    if plane == 'zx':
+        resized = [resize(slic,zsize,xsize) for slic in stack]
+    if plane == 'xy':
+        resized = [resize(slic,xsize,ysize) for slic in stack]
+    return resized
+
 
 def capScan(scan,thresh):
     f = lambda x : thresh if x>thresh else x
