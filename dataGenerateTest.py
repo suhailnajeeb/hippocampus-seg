@@ -38,23 +38,7 @@ thresh = 4000
 capped = capScan(scan,thresh)
 normalized = normalize(capped,thresh)
 
-#line = list(map(f,line))
-
-def capScan(scan,thresh):
-    f = lambda x : thresh if x>thresh else x
-    capped = np.zeros(data.shape)
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
-            for k in range(data.shape[2]):
-                capped[i][j][k] = f(data[i][j][k])
-    return capped
-
-# todo: study the standard deviation of the data and update normalize 
-
-def normalize(scan,max):
-    return scan/4000.0
-
-
+# todo: Study the standard deviation and distribution of the dataset
 
 # todo: Resize Scan in all dimensions
 
