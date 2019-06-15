@@ -45,14 +45,48 @@ from utilsDb import return2DslicesAsList
 from utilsDb import resizeStack
 
 
-capped = capScan(data,thresh)
-#normalized = normalize(capped,thresh)
- 
-zx = return2DslicesAsList(capped,'zx')
 
+#normalized = normalize(capped,thresh)
+
+# todo : modify the normalize function to normalize a single image. 
+# turns out i do not need to modify it. 
+
+
+capped = capScan(data,thresh)
+zx = return2DslicesAsList(capped,'zx')
 resized = resizeStack(zx,'zx',size)
 
+maskzx = return2DslicesAsList(maskData, 'zx')
+maskResized = resizeStack(maskzx,'zx',size)
 
+# todo: store all the images of a scan inlcuding mask in an h5 file.
+
+# todo: apply compression and formatting to dataset
+
+import h5py
+
+nimages = len(resized)
+shape = (nimages,) + resized[0].shape
+
+h5file = h5py.File("./data/testfile.h5","w")
+h5file.create_dataset("image",shape)
+h5file.create_dataset("mask",(nimages,) + shape)
+
+didx = 0
+
+for img in resized:
+    h5file["image"][didx] = img
+    didx = didx + 1
+
+didx = 0
+for masks in maskResized:
+    h5file["mask"][didx] = masks
+    didx = didx + 1
+
+#h5file["image"][...] = singleSlice
+#h5file["mask"][...] = singleMask
+
+h5file.close()
 
 import numpy as np
 
@@ -62,18 +96,3 @@ print(zx.shape)
 # todo: Study the standard deviation and distribution of the dataset
 
 # todo: Resize Scan in all dimensions
-
-'''
-
-import h5py
-
-h5file = h5py.File("./data/testfile.h5","w")
-h5file.create_dataset("image",singleSlice.shape)
-h5file.create_dataset("mask",singleMask.shape)
-
-h5file["image"][...] = singleSlice
-h5file["mask"][...] = singleMask
-
-h5file.close()
-
-'''

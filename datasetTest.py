@@ -2,8 +2,8 @@ import h5py
 
 h5file = h5py.File("./data/testfile.h5","r")
 
-singleSlice = h5file["image"][...]
-singleMask = h5file["mask"][...]
+images = h5file["image"][...]
+masks = h5file["mask"][...]
 
 h5file.close()
 
