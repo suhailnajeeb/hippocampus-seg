@@ -2,6 +2,7 @@
 
 import cv2
 import numpy as np
+import tensorlayer as tl
 
 def resize(img,rows,cols):
     '''
@@ -57,7 +58,25 @@ def return2DslicesAsList(scan,plane):
     return slices
 
 
-
+def distort_img(data):
+    """ data augumentation """
+    x, y = data
+    x, y = tl.prepro.flip_axis_multi([x, y],  
+                             axis=0, is_random=True) # up down
+    x, y = tl.prepro.flip_axis_multi([x, y],
+                            axis=1, is_random=True) # left right
+    x, y = tl.prepro.elastic_transform_multi([x, y],
+                            alpha=720, sigma=24, is_random=True)
+    x, y = tl.prepro.rotation_multi([x, y], rg=20,
+                            is_random=True, fill_mode='constant') # nearest, constant
+    x, y = tl.prepro.shift_multi([x, y], wrg=0.10,
+                            hrg=0.10, is_random=True, fill_mode='constant')
+    x, y = tl.prepro.shear_multi([x, y], 0.05,
+                            is_random=True, fill_mode='constant')
+    x, y = tl.prepro.zoom_multi([x, y],
+                            zoom_range=[0.9, 1.1], is_random=True,
+                            fill_mode='constant')
+    return x, y
 
 
 
