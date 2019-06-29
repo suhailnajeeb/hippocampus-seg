@@ -44,6 +44,8 @@ maskResized = resizeStack(masks,plane,size)
 
 # todo: store all the images of a scan inlcuding mask in an h5 file.
 
+# todo: store the masks in categorical format
+
 # todo: apply compression and formatting to dataset
 
 nimages = len(scanResized)
