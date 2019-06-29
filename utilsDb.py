@@ -58,9 +58,13 @@ def return2DslicesAsList(scan,plane):
     return slices
 
 
-def distort_img(data):
+def distort_img(data,grayscale = True):
     """ data augumentation """
     x, y = data
+    if grayscale:
+        x = x.reshape(x.shape[0],x.shape[1],1)
+        y = y.reshape(y.shape[0],y.shape[1],1)
+    
     x, y = tl.prepro.flip_axis_multi([x, y],  
                              axis=0, is_random=True) # up down
     x, y = tl.prepro.flip_axis_multi([x, y],
@@ -76,6 +80,9 @@ def distort_img(data):
     x, y = tl.prepro.zoom_multi([x, y],
                             zoom_range=[0.9, 1.1], is_random=True,
                             fill_mode='constant')
+    if grayscale:
+        x = x.reshape(x.shape[0],x.shape[1])
+        y = y.reshape(y.shape[0],y.shape[1])
     return x, y
 
 
