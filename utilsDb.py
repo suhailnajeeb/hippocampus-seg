@@ -4,30 +4,32 @@ import cv2
 import numpy as np
 import tensorlayer as tl
 
-def resize(img,rows,cols):
-    '''
+
+def resize(img, rows, cols):
+    """
     pass the image and row/col shape
     returns resized image
 
-    '''
-    return cv2.resize(img, (cols,rows) , interpolation = cv2.INTER_CUBIC)
+    """
+    return cv2.resize(img, (cols, rows), interpolation=cv2.INTER_CUBIC)
 
-def resizeStack(stack,plane,size):
-    '''
+
+def resizeStack(stack, plane, size):
+    """
     resize a stack of images
-    '''
+    """
     xsize, ysize, zsize = size
-    if plane == 'yz':
-        resized = [resize(slic,ysize,zsize) for slic in stack]
-    if plane == 'zx':
-        resized = [resize(slic,zsize,xsize) for slic in stack]
-    if plane == 'xy':
-        resized = [resize(slic,xsize,ysize) for slic in stack]
+    if plane == "yz":
+        resized = [resize(slic, ysize, zsize) for slic in stack]
+    if plane == "zx":
+        resized = [resize(slic, zsize, xsize) for slic in stack]
+    if plane == "xy":
+        resized = [resize(slic, xsize, ysize) for slic in stack]
     return resized
 
 
-def capScan(scan,thresh):
-    f = lambda x : thresh if x>thresh else x
+def capScan(scan, thresh):
+    f = lambda x: thresh if x > thresh else x
     capped = np.zeros(scan.shape)
     for i in range(scan.shape[0]):
         for j in range(scan.shape[1]):
@@ -36,58 +38,58 @@ def capScan(scan,thresh):
     return capped
 
 
-def normalize(scan,max):
-    return scan/4000.0
+def normalize(scan, max):
+    return scan / 4000.0
 
-def return2DslicesAsList(scan,plane):
-    '''
+
+def return2DslicesAsList(scan, plane):
+    """
     Takes in a 3D Scan and returns slices as a list along
     axis defined by plane. 
     plane = 'yz' , 'zx', 'xy'
-    '''
+    """
     slices = []
-    if plane == 'yz':
+    if plane == "yz":
         for i in range(35):
-            slices.append(scan[i,:,:])
-    if plane == 'zx':
+            slices.append(scan[i, :, :])
+    if plane == "zx":
         for i in range(scan.shape[1]):
-            slices.append(scan[:,i,:])
-    if plane == 'xy':
+            slices.append(scan[:, i, :])
+    if plane == "xy":
         for i in range(scan.shape[2]):
-            slices.append(scan[:,:,i])
+            slices.append(scan[:, :, i])
     return slices
 
 
-def distort_img(data,grayscale = True):
+def distort_img(data, grayscale=True):
     """ data augumentation """
     x, y = data
     if grayscale:
-        x = x.reshape(x.shape[0],x.shape[1],1)
-        y = y.reshape(y.shape[0],y.shape[1],1)
-    
-    x, y = tl.prepro.flip_axis_multi([x, y],  
-                             axis=0, is_random=True) # up down
-    x, y = tl.prepro.flip_axis_multi([x, y],
-                            axis=1, is_random=True) # left right
-    x, y = tl.prepro.elastic_transform_multi([x, y],
-                            alpha=720, sigma=24, is_random=True)
-    x, y = tl.prepro.rotation_multi([x, y], rg=20,
-                            is_random=True, fill_mode='constant') # nearest, constant
-    x, y = tl.prepro.shift_multi([x, y], wrg=0.10,
-                            hrg=0.10, is_random=True, fill_mode='constant')
-    x, y = tl.prepro.shear_multi([x, y], 0.05,
-                            is_random=True, fill_mode='constant')
-    x, y = tl.prepro.zoom_multi([x, y],
-                            zoom_range=[0.9, 1.1], is_random=True,
-                            fill_mode='constant')
+        x = x.reshape(x.shape[0], x.shape[1], 1)
+        y = y.reshape(y.shape[0], y.shape[1], 1)
+
+    x, y = tl.prepro.flip_axis_multi([x, y], axis=0, is_random=True)  # up down
+    x, y = tl.prepro.flip_axis_multi([x, y], axis=1, is_random=True)  # left right
+    x, y = tl.prepro.elastic_transform_multi(
+        [x, y], alpha=720, sigma=24, is_random=True
+    )
+    x, y = tl.prepro.rotation_multi(
+        [x, y], rg=20, is_random=True, fill_mode="constant"
+    )  # nearest, constant
+    x, y = tl.prepro.shift_multi(
+        [x, y], wrg=0.10, hrg=0.10, is_random=True, fill_mode="constant"
+    )
+    x, y = tl.prepro.shear_multi([x, y], 0.05, is_random=True, fill_mode="constant")
+    x, y = tl.prepro.zoom_multi(
+        [x, y], zoom_range=[0.9, 1.1], is_random=True, fill_mode="constant"
+    )
     if grayscale:
-        x = x.reshape(x.shape[0],x.shape[1])
-        y = y.reshape(y.shape[0],y.shape[1])
+        x = x.reshape(x.shape[0], x.shape[1])
+        y = y.reshape(y.shape[0], y.shape[1])
     return x, y
 
 
-
-'''
+"""
 
 thresh = 4000
 f = lambda x : thresh if x>thresh else x
@@ -104,4 +106,5 @@ singleSlice = h5file["image"][...]
 singleMask = h5file["mask"][...]
 
 h5file.close()
-'''
+"""
+
