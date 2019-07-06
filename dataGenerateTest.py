@@ -1,7 +1,8 @@
 import nibabel as nib
-#import glob
-#import numpy as np
+# import glob
+# import numpy as np
 import h5py
+from utilsDb import distort_img
 
 # Utility Imports
 
@@ -48,13 +49,33 @@ maskResized = resizeStack(masks, plane, size)
 
 # todo: apply compression and formatting to dataset
 
-nimages = len(scanResized)
+mult = 9
+
+nimages = len(scanResized)*(mult+1)
 shape = (nimages,) + scanResized[0].shape
 
 h5file = h5py.File("./data/testfile.h5", "w")
 h5file.create_dataset("image", shape)
 h5file.create_dataset("mask", (nimages,) + shape)
 
+didx = 0
+
+for (scan, mask) in zip(scanResized, maskResized):
+    data = [scan, mask]
+    scans = [scan]
+    masks = [mask]
+    for i in range(mult):
+        scan_distorted, mask_distorted = distort_img(data)
+        scans.append(scan_distorted)
+        masks.append(mask_distorted)
+    for (img, mask) in zip(scans, masks):
+        h5file["image"][didx] = normalize(img, thresh)
+        h5file["mask"][didx] = mask
+        didx = didx + 1
+
+h5file.close()
+
+"""
 didx = 0
 
 for img in scanResized:
@@ -73,3 +94,5 @@ h5file.close()
 # todo: Study the standard deviation and distribution of the dataset
 
 # todo: Resize Scan in all dimensions
+
+"""
