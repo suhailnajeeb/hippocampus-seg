@@ -1,5 +1,6 @@
 import nibabel as nib
-# import glob
+import glob
+
 # import numpy as np
 import h5py
 from utilsDb import distort_img
@@ -11,24 +12,69 @@ from utilsDb import normalize
 from utilsDb import return2DslicesAsList
 from utilsDb import resizeStack
 
+from keras.utils import to_categorical
+
 # ## global parameters ###
 
 size = [35, 50, 35]
+xsize, ysize, zsize = size
 thresh = 4000
-plane = 'xy'
+plane = "xy"
 
-scanName = 'hippocampus_001.nii.gz'
+scanName = "hippocampus_001.nii.gz"
 
-scanPath = './Task04_Hippocampus/imagesTr/' + scanName
-labelPath = './Task04_Hippocampus/labelsTr/' + scanName
+scanPath = "./Task04_Hippocampus/imagesTr/*.nii.gz" # + scanName
+labelPath = "./Task04_Hippocampus/labelsTr/*.nii.gz" #  + scanName
 
-# scans = glob.glob(scanPath)
-# labels = glob.glob(labelPath)
+scans = glob.glob(scanPath)
+labels = glob.glob(labelPath)
 
 # scan = scans[0]
 # label = labels[0]
 
+# I need to iterate through all the images to get the number of images
+
+nimages = 0
+
+for scan in scans:
+    img = nib.load(scan)
+    imgData = img.get_fdata()
+    if plane == "yz":
+        n = imgData.shape[0]
+    if plane == "zx":
+        n = imgData.shape[1]
+    if plane == "xy":
+        n = imgData.shape[2]
+    nimages = nimages + n
+
 # ##################### for a single image ##################################
+
+
+
+# todo: store all the images of a scan inlcuding mask in an h5 file.
+
+# todo: store the masks in categorical format
+
+# todo: apply compression and formatting to dataset
+
+mult = 0
+
+nimages = nimages * (mult + 1)
+
+if plane == "yz":
+    shape = (ysize, zsize)
+if plane == "zx":
+    shape = (zsize, xsize)
+if plane == "xy":
+    shape = (xsize, ysize)
+
+shape = (nimages,) + shape
+
+h5file = h5py.File("./data/testfile.h5", "w")
+h5file.create_dataset("image", shape)
+h5file.create_dataset("mask", (nimages,) + shape)
+
+didx = 0
 
 img = nib.load(scanPath)
 imgData = img.get_fdata()
@@ -43,24 +89,10 @@ scanResized = resizeStack(slices, plane, size)
 masks = return2DslicesAsList(maskData, plane)
 maskResized = resizeStack(masks, plane, size)
 
-# todo: store all the images of a scan inlcuding mask in an h5 file.
-
-# todo: store the masks in categorical format
-
-# todo: apply compression and formatting to dataset
-
-mult = 9
-
-nimages = len(scanResized)*(mult+1)
-shape = (nimages,) + scanResized[0].shape
-
-h5file = h5py.File("./data/testfile.h5", "w")
-h5file.create_dataset("image", shape)
-h5file.create_dataset("mask", (nimages,) + shape)
-
-didx = 0
-
 for (scan, mask) in zip(scanResized, maskResized):
+    maskCat = to_categorical(mask)
+    mask1 = maskCat[:, :, 0]
+    mask = 1 - mask1
     data = [scan, mask]
     scans = [scan]
     masks = [mask]
