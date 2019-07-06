@@ -1,8 +1,8 @@
 from utilsDb import distort_img
-#from utilsDb import distort
+# from utilsDb import distort
 
 import nibabel as nib
-#import glob
+# import glob
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.utils import to_categorical
