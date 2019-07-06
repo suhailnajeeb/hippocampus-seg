@@ -50,7 +50,7 @@ def return2DslicesAsList(scan, plane):
     """
     slices = []
     if plane == "yz":
-        for i in range(35):
+        for i in range(scan.shape[0]):
             slices.append(scan[i, :, :])
     if plane == "zx":
         for i in range(scan.shape[1]):
