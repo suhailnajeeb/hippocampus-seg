@@ -9,8 +9,8 @@ from keras.utils import to_categorical
 
 scanID = "hippocampus_001"
 
-scanPath = "./Task04_Hippocampus/imagesTr/"+ scanID + ".nii.gz"
-labelPath = "./Task04_Hippocampus/labelsTr/"+scanID + ".nii.gz"
+scanPath = "./Task04_Hippocampus/imagesTr/" + scanID + ".nii.gz"
+labelPath = "./Task04_Hippocampus/labelsTr/" + scanID + ".nii.gz"
 
 img = nib.load(scanPath)
 scan = img.get_fdata()
@@ -41,6 +41,7 @@ plt.imshow(scan_distorted)
 plt.title("Distorted Scan")
 
 mask_distorted = np.round(mask_distorted)
+# mask_distorted = np.ceil(mask_distorted)
 
 plt.subplot(2, 2, 4)
 plt.imshow(mask_distorted)
