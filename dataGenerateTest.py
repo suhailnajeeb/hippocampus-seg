@@ -26,8 +26,8 @@ scanName = "hippocampus_001.nii.gz"
 scanPath = "./Task04_Hippocampus/imagesTr/*.nii.gz" # + scanName
 labelPath = "./Task04_Hippocampus/labelsTr/*.nii.gz" #  + scanName
 
-scans = glob.glob(scanPath)
-labels = glob.glob(labelPath)
+scans = sorted(glob.glob(scanPath))
+labels = sorted(glob.glob(labelPath))
 
 # scan = scans[0]
 # label = labels[0]
@@ -57,7 +57,7 @@ for scan in scans:
 
 # todo: apply compression and formatting to dataset
 
-mult = 0
+mult = 4
 
 nimages = nimages * (mult + 1)
 
@@ -72,9 +72,51 @@ shape = (nimages,) + shape
 
 h5file = h5py.File("./data/testfile.h5", "w")
 h5file.create_dataset("image", shape)
-h5file.create_dataset("mask", (nimages,) + shape)
+h5file.create_dataset("mask", shape)
+
+def storeSingleImage(didx,scanPath,labelPath):
+    img = nib.load(scanPath)
+    imgData = img.get_fdata()
+
+    mask = nib.load(labelPath)
+    maskData = mask.get_fdata()
+
+    capped = capScan(imgData, thresh)
+    slices = return2DslicesAsList(capped, plane)
+    scanResized = resizeStack(slices, plane, size)
+
+    masks = return2DslicesAsList(maskData, plane)
+    maskResized = resizeStack(masks, plane, size)
+
+    for (scan, mask) in zip(scanResized, maskResized):
+        maskCat = to_categorical(mask)
+        mask1 = maskCat[:, :, 0]
+        mask = 1 - mask1
+        data = [scan, mask]
+        scans = [scan]
+        masks = [mask]
+        for i in range(mult):
+            scan_distorted, mask_distorted = distort_img(data)
+            scans.append(scan_distorted)
+            masks.append(mask_distorted)
+        for (img, mask) in zip(scans, masks):
+            h5file["image"][didx] = normalize(img, thresh)
+            h5file["mask"][didx] = mask
+            didx = didx + 1
+    return didx
 
 didx = 0
+
+for (scanPath,labelPath) in zip(scans,labels):
+    print("Processing: " + scanPath)
+    didx = storeSingleImage(didx, scanPath, labelPath)
+
+
+h5file.close()
+
+#didx = storeSingleImage(didx, scans[0], labels[0])
+
+'''
 
 img = nib.load(scanPath)
 imgData = img.get_fdata()
@@ -105,7 +147,9 @@ for (scan, mask) in zip(scanResized, maskResized):
         h5file["mask"][didx] = mask
         didx = didx + 1
 
-h5file.close()
+'''
+
+
 
 """
 didx = 0
