@@ -3,6 +3,7 @@
 import cv2
 import numpy as np
 import tensorlayer as tl
+import nibabel as nib
 
 
 def resize(img, rows, cols):
@@ -87,6 +88,40 @@ def distort_img(data, grayscale=True):
         x = x.reshape(x.shape[0], x.shape[1])
         y = y.reshape(y.shape[0], y.shape[1])
     return x, y
+
+# todo: implement function
+'''
+def storeSingleImage(didx,scanPath,labelPath):
+    img = nib.load(scanPath)
+    imgData = img.get_fdata()
+
+    mask = nib.load(labelPath)
+    maskData = mask.get_fdata()
+
+    capped = capScan(imgData, thresh)
+    slices = return2DslicesAsList(capped, plane)
+    scanResized = resizeStack(slices, plane, size)
+
+    masks = return2DslicesAsList(maskData, plane)
+    maskResized = resizeStack(masks, plane, size)
+
+    for (scan, mask) in zip(scanResized, maskResized):
+        maskCat = to_categorical(mask)
+        mask1 = maskCat[:, :, 0]
+        mask = 1 - mask1
+        data = [scan, mask]
+        scans = [scan]
+        masks = [mask]
+        for i in range(mult):
+            scan_distorted, mask_distorted = distort_img(data)
+            scans.append(scan_distorted)
+            masks.append(mask_distorted)
+        for (img, mask) in zip(scans, masks):
+            h5file["image"][didx] = normalize(img, thresh)
+            h5file["mask"][didx] = mask
+            didx = didx + 1
+    return didx
+'''
 
 
 """
