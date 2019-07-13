@@ -22,21 +22,9 @@ thresh = 4000                       # MRI cutoff value
 plane = "xy"                        # set the plane along which scans will be taken
 mult = 4                            # factor of augmentation, set 0 for no augmentation
 
-# for train set set Train = true, else set Train = false
-
-Train = True
-
-if Train:
-    scanPath = "./Task04_Hippocampus/imagesTr/*.nii.gz" # + scanName
-    labelPath = "./Task04_Hippocampus/labelsTr/*.nii.gz" #  + scanName
-    h5path = "./data/train_" + str(mult) + ".h5"
-
-else:
-    scanPath = "./Task04_Hippocampus/imagesTs/*.nii.gz" # + scanName
-    labelPath = "./Task04_Hippocampus/labelsTs/*.nii.gz" #  + scanName  
-    h5path = "./data/test.h5"
-    mult = 0
-
+scanPath = "./Task04_Hippocampus/imagesTr/*.nii.gz" # + scanName
+labelPath = "./Task04_Hippocampus/labelsTr/*.nii.gz" #  + scanName
+h5path = "./data/train_" + str(mult) + "x.h5"
 
 # collect image paths from folders
 
