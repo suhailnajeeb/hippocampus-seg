@@ -3,7 +3,7 @@
 import tensorflow as tf
 import tensorlayer as tl
 import numpy as np
-import os, time, model
+import os, time
 
 def distort_imgs(data):
     """ data augumentation """
@@ -24,6 +24,5 @@ def distort_imgs(data):
                             zoom_range=[0.9, 1.1], is_random=True,
                             fill_mode='constant')
     return x1, x2, x3, x4, y
-    
-    
-    
+
+
