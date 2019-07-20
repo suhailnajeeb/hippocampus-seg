@@ -107,7 +107,9 @@ venv.bak/
 
 *.nii
 *.gz
+*.nii.gz
 
 # Datasets
 
 *.h5
+*.hdf5
