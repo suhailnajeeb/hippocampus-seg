@@ -11,12 +11,13 @@ from utilsDb import capScan
 from utilsDb import normalize
 from utilsDb import return2DslicesAsList
 from utilsDb import resizeStack
+#import tqdm
 
 from keras.utils import to_categorical
 
 ### global parameters ###
 
-size = [35, 50, 35]                 # dimensions to resize scan to
+size = [40, 48, 40]                 # dimensions to resize scan to
 xsize, ysize, zsize = size
 thresh = 4000                       # MRI cutoff value
 plane = "xy"                        # set the plane along which scans will be taken
@@ -96,7 +97,7 @@ def storeSingleImage(didx,scanPath,labelPath):
 didx = 0
 
 for (scanPath,labelPath) in zip(scans,labels):
-    print("Processing: " + scanPath)
+    print("Processing: " + scanPath + " (" + didx + " of " + len(scans) + " )")
     didx = storeSingleImage(didx, scanPath, labelPath)
 
 h5file.close()

@@ -1,44 +1,60 @@
 import h5py
 from sklearn.model_selection import train_test_split
 import numpy as np
+from modelLib import dummynet, get_unet, mini_unet
+from utilsTrain import generator
+import os
+from keras.callbacks import ModelCheckpoint
 
 h5path = "./data/train_4x.h5"
 h5file = h5py.File(h5path, "r")
+
+weightsFolder = "./weights/"
+modelName = "UNET"
+bestModelPath = "./weights/" + modelName + "/best.hdf5"
+
+batchSize = 1024
+epochs = 1000
 
 n = h5file["image"].shape[0]
 a = np.arange(n)
 
 train, test = train_test_split(a, test_size=0.2, random_state=42)
 
-def generator(h5file, indexes, batch_size):
-    X = []
-    Y = []
-    idx = 0
-    while True:
-        for index in indexes:
-            if(idx==0):
-                X = []
-                Y = []
-            print("Loading image : " + str(index) + " , idx = " + str(idx))
-            img = np.expand_dims(h5file["image"][index], axis = 2)
-            mask = np.expand_dims(h5file["mask"][index], axis = 2)
-            X.append(img)
-            Y.append(mask)
-            idx = idx + 1
-            if(idx>=batch_size):
-                print("yielding")
-                idx = 0
-                yield np.asarray(X),np.asarray(Y)
-
-train_generator = generator(h5file, train, 32)
-test_generator = generator(h5file, test, 32)
+train_generator = generator(h5file, train, batchSize)
+test_generator = generator(h5file, test, batchSize)
 
 # Define the Model
+
+#model = dummynet()
+model = mini_unet(40,48)
+model.summary()
 
 # Compile the Model & Configure
 
 # Fit the Model
 
+#x,y = next(train_generator)
+#model.fit(x,y)
+
+#check1 = ModelCheckpoint(os.path.join(weightsFolder, modelName + "_{epoch:02d}-loss-{val_loss:.3f}.hdf5"), monitor='val_loss', save_best_only=True, mode='auto')
+check2 = ModelCheckpoint(bestModelPath, monitor='val_loss', save_best_only=True, mode='auto')
+#check3 = EarlyStopping(monitor='val_loss', min_delta=0.01, patience=int(options.patience), verbose=0, mode='auto')
+#check4 = CSVLogger(os.path.join(modelFolder, modelName +'_trainingLog.csv'), separator=',', append=True)
+#check5 = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=int(options.patience)//1.5, verbose=1, mode='auto', epsilon=0.0001, cooldown=0, min_lr=1e-10)
+
+
+
+#print("\nInitiating Training:\n")
+trained_model = model.fit_generator(train_generator, steps_per_epoch=(len(train) // batchSize), epochs=epochs, 
+                                    validation_data= test_generator, validation_steps=(len(test) // batchSize), callbacks=[check2], 
+                                    verbose=1)
+
+
 # Plot metrics 
 
+# cleanup
+
+train_generator.close()
+test_generator.close()
 h5file.close()
